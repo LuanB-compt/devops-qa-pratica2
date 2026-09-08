@@ -47,6 +47,7 @@
 
                     <!-- Prepara o agente antes dos testes -->
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
@@ -61,6 +62,37 @@
                         </goals>
                     </execution>
 
+                    <!-- Quality Gate: mínimo de 80% de cobertura de linhas -->
+                    <execution>
+                        <id>jacoco-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <!-- Verifica o projeto inteiro -->
+                                    <element>BUNDLE</element>
+
+                                    <limits>
+                                        <limit>
+                                            <!-- Cobertura de linhas -->
+                                            <counter>LINE</counter>
+
+                                            <!-- Percentual coberto -->
+                                            <value>COVEREDRATIO</value>
+
+                                            <!-- Mínimo: 80% -->
+                                            <minimum>0.80</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
+
                 </executions>
             </plugin>
 
@@ -71,12 +103,24 @@
                 <artifactId>maven-pmd-plugin</artifactId>
                 <version>3.25.0</version>
 
+                <configuration>
+                    <!-- Faz o build falhar se houver violações -->
+                    <failOnViolation>true</failOnViolation>
+
+                    <!-- Mostra as violações no console -->
+                    <printFailingErrors>true</printFailingErrors>
+                </configuration>
+
                 <executions>
                     <execution>
-                        <id>pmd-analysis</id>
+                        <id>pmd-check</id>
                         <phase>verify</phase>
                         <goals>
+                            <!-- Gera relatório -->
                             <goal>pmd</goal>
+
+                            <!-- Verifica violações -->
+                            <goal>check</goal>
                         </goals>
                     </execution>
                 </executions>
